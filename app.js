@@ -57,7 +57,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // setting passport 3/3
 passport.use(new Strategy(
-  console.log('strategy');
   function (username, password, cb) {
     User.findOne({
       username: username
@@ -77,13 +76,11 @@ passport.use(new Strategy(
   }));
 
 passport.serializeUser(function (user, cb) {
-  console.log('resialize');
   nowusers.push(user);
   cb(null, user.id);
 });
 
 passport.deserializeUser(function (id, cb) {
-  console.log('desirialize');
   User.findById(id, function (err, user) {
     cb(null, user);
   });
