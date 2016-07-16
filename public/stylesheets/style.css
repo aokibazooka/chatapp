@@ -1,0 +1,35 @@
+body {
+  font-family: 'Lucida Grande', 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+}
+
+ul {
+  padding-left: 0px;
+}
+
+#mainrow {
+  margin-bottom: 3em;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+/* スマホ横画面用 */
+@media screen and (max-width: 480px) {
+  .container{padding:0}
+  div[class^="col-"] {padding:0}
+  .row {margin:0;}
+}
+/* スマホ縦画面用 */
+@media screen and (max-width: 320px) {
+  .container{padding:0}
+  div[class^="col-"] {padding:0}
+  .row {margin:0;}
+}
+
+#denxchan {
+  position: relative;
+}

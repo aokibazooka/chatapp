@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/signin.css">
+  <title>チャットアプリ</title>
+</head>
+
+<body>
+    <div class="container">
+
+      <form class="form-signin" action="/login" method="post">
+        <h2 class="form-signin-heading">ログイン</h2>
+        <input type="text" name="username" class="form-control" placeholder="ユーザ名" required autofocus>
+        <input type="password" name="password" class="form-control" placeholder="パスワード" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">ログイン</button>
+      </form>
+      
+      <a href="/register">新規登録</a>
+
+    </div> <!-- /container -->
+</body>
+
+</html>

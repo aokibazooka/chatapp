@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <title>チャットアプリ</title>
+  <link rel="stylesheet" href="stylesheets/bootstrap.min.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="application/javascript" src="javascripts/script.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-default">
+    <div class="container">
+      <a class="navbar-brand" href="/">チャットアプリ！！</a>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a id="logout" href="/logout">ログアウト</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row" id="mainrow">
+
+      <div class="col-sm-3">
+        <img src="img/denx_chan.png" alt="でんくすちゃん" id="denxchan">
+        <div class="list-group">
+          <ul id="participant">
+            <li class="list-group-item">参加者</li>
+            <% users.forEach(user=>{ %>
+            <li id="<%= user.username %>" class="list-group-item"><%= user.username %></li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-sm-9">
+        <table class="table table-striped">
+          <tbody id="messages">
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+
+      <div class="input-group">
+        <input type="text" class="form-control" id="message">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" id="submit">送信</button>
+        </span>
+      </div>
+
+    </div>
+  </footer>
+
+</body>
+
+</html>
