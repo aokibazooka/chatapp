@@ -38,13 +38,15 @@ $(function(){
 
   };
 
-  var addParticipant = function(name){
-    var li = '<li id="'+name+'" class="list-group-item">'+name+'</li>';
-    $('#participant').append(li);
-  };
+  var updateParticipant = function(users){
 
-  var removeParticipant = function(name){
-     $('#'+name).remove();
+    $('.users').remove();
+
+    users.forEach(function(user){
+      var li = '<li id="'+user+'" class="list-group-item users">'+user+'</li>';
+      $('#participant').append(li);
+    });
+
   };
 
   var denxchan = {
@@ -65,19 +67,26 @@ $(function(){
   };
 
   $('button#submit').click(function(){
+
     var message = createMessage();
     denxchan.jump();
+
     // socket.io 3/5
     socket.emit('messageToServer', message);
+
   });
 
   $('input#message').keypress(function(e){
+
     if (e.which == 13) {
+
       var message = createMessage();
       denxchan.jump();
+
       // socket.io 4/5
       socket.emit('messageToServer', message);
     }
+
   });
 
   // socket.io 5/5
@@ -85,8 +94,9 @@ $(function(){
     addMessage(message);
   });
 
-  socket.on('otherlogin', function(name){ addParticipant(name) });
-  socket.on('otherlogout', function(name){ removeParticipant(name) });
+  socket.on('updateParticipant', function(users){
+    updateParticipant(users)
+  });
 
   denxchan.shake();
 

@@ -7,9 +7,9 @@ var bodyParser = require('body-parser');
 // setting socket.io 1/4
 var http = require('http');
 var socketio = require('socket.io');
-// xss defence 1/2
+// setting xss defence
 var xssFilters = require('xss-filters');
-// mongoDB 1/4
+// setting mongoDB 1/2
 var mongoose = require('mongoose');
 // setting passport 1/3
 var passport = require('passport');
@@ -24,7 +24,7 @@ var app = express();
 // setting socket.io 2/4
 var server = http.Server(app);
 var io = socketio(server);
-// mongoDB 2/4
+// setting mongoDB 2/2
 var db = mongoose.connect('mongodb://localhost/chatapp');
 var MessageSchema = new mongoose.Schema({
   name: String,
@@ -63,20 +63,11 @@ passport.use(new Strategy(
     }, function (err, user) {
       if (err) { return cb(err); }
       if (!user || user.password != password) { return cb(null, false); }
-      var flag = false;
-      nowusers.filter(user => user.username == username).forEach(()=>{
-        flag = true;
-      });
-      if (flag) {
-        return cb(null, false);
-      };
-      io.sockets.emit('otherlogin', user.username);
       return cb(null, user);
     });
   }));
 
 passport.serializeUser(function (user, cb) {
-  nowusers.push(user);
   cb(null, user.id);
 });
 
@@ -105,7 +96,6 @@ io.use(passportSocketIo.authorize({
   store: sessionStore
 }));
 
-// routings
 app.get('/', ensureLogin.ensureLoggedIn(), (req, res)=>{
   res.render('index', { users: nowusers });
 });
@@ -119,8 +109,6 @@ app.post('/login', ensureLogin.ensureLoggedOut(), passport.authenticate('local',
 });
 
 app.get('/logout', ensureLogin.ensureLoggedIn(), (req, res)=>{
-  nowusers.splice(nowusers.indexOf(req.user), 1);
-  io.sockets.emit('otherlogout', req.user.username);
   req.logout();
   res.redirect('/');
 });
@@ -168,9 +156,11 @@ app.use(function (err, req, res, next) {
   res.render('error', { message: err.message, error: {} });
 });
 
-// using socket.io
 io.on('connection', function (socket) {
-  // mongoDB 3/4
+
+  nowusers.push(socket.request.user.username);
+  io.sockets.emit('updateParticipant', nowusers);
+
   var latestMassages = Message.find({}).sort({$natural:-1}).limit(20);
   latestMassages.exec((err, messages)=>{
       messages
@@ -180,15 +170,20 @@ io.on('connection', function (socket) {
 
   socket.on('messageToServer', message => {
 
-    // XSS defence 2/2
     message.text = xssFilters.inHTMLData(message.text);
     message.name = xssFilters.inHTMLData(socket.request.user.username);
 
-    //mongoDB 4/4
     var messagedb = new Message(message);
     messagedb.save();
 
     io.sockets.emit('messageToClient', message);
+  });
+
+  socket.on('disconnect', function () {
+
+    nowusers.splice(nowusers.indexOf(socket.request.user), 1);
+    io.sockets.emit('updateParticipant', nowusers);
+
   });
 
 });
